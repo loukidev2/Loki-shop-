@@ -1,112 +1,45 @@
-# Loki-shop-
-<!DOCTYPE html><html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LOKI_SHOP - Anime T-Shirts</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #111;
-      color: #fff;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #c00;
-      padding: 20px;
-      text-align: center;
-      font-size: 2rem;
-      font-weight: bold;
-    }
-    .products {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
-    .product {
-      background-color: #222;
-      border-radius: 8px;
-      padding: 10px;
-      text-align: center;
-    }
-    .product img {
-      max-width: 100%;
-      border-radius: 8px;
-    }
-    .product h3 {
-      color: #e00;
-    }
-    .product button {
-      margin-top: 10px;
-      padding: 10px;
-      background-color: #c00;
-      border: none;
-      color: white;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    .cart {
-      padding: 20px;
-      background-color: #111;
-    }
-    .cart h2 {
-      color: #e00;
-    }
-  </style>
-</head>
-<body>
-  <header>LOKI_SHOP - Anime T-Shirts</header>  <section class="products" id="product-list">
-    <!-- Products inserted by JS -->
-  </section>  <section class="cart">
-    <h2>Shopping Cart</h2>
-    <ul id="cart-items"></ul>
-    <p>Total: $<span id="cart-total">0</span></p>
-  </section>  <script>
-    const products = [
-      { id: 1, name: 'Naruto Tee', price: 20, image: 'https://via.placeholder.com/250x300?text=Naruto' },
-      { id: 2, name: 'Attack on Titan Tee', price: 25, image: 'https://via.placeholder.com/250x300?text=AOT' },
-      { id: 3, name: 'One Piece Tee', price: 22, image: 'https://via.placeholder.com/250x300?text=One+Piece' }
-    ];
+import React, { useState } from "react"; import { Card, CardContent } from "@/components/ui/card"; import { Button } from "@/components/ui/button"; import { Select, SelectItem } from "@/components/ui/select";
 
-    const productList = document.getElementById('product-list');
-    const cartItems = document.getElementById('cart-items');
-    const cartTotal = document.getElementById('cart-total');
-    let cart = [];
+const products = [ { name: "منتوج 1", image: "https://via.placeholder.com/300x300/FF0000/FFFFFF?text=Product+1", priceMAD: 150 }, { name: "منتوج 2", image: "https://via.placeholder.com/300x300/FF0000/FFFFFF?text=Product+2", priceMAD: 200 }, { name: "منتوج 3", image: "https://via.placeholder.com/300x300/FF0000/FFFFFF?text=Product+3", priceMAD: 300 } ];
 
-    function renderProducts() {
-      products.forEach(product => {
-        const div = document.createElement('div');
-        div.className = 'product';
-        div.innerHTML = `
-          <img src="${product.image}" alt="${product.name}" />
-          <h3>${product.name}</h3>
-          <p>$${product.price}</p>
-          <button onclick="addToCart(${product.id})">Add to Cart</button>
-        `;
-        productList.appendChild(div);
-      });
-    }
+const exchangeRates = { MAD: 1, USD: 0.10, EUR: 0.093 };
 
-    function addToCart(id) {
-      const product = products.find(p => p.id === id);
-      cart.push(product);
-      renderCart();
-    }
+export default function LokiShop() { const [currency, setCurrency] = useState("MAD");
 
-    function renderCart() {
-      cartItems.innerHTML = '';
-      let total = 0;
-      cart.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = `${item.name} - $${item.price}`;
-        cartItems.appendChild(li);
-        total += item.price;
-      });
-      cartTotal.textContent = total;
-    }
+const formatPrice = (madPrice) => { const converted = (madPrice * exchangeRates[currency]).toFixed(2); switch (currency) { case "USD": return $${converted}; case "EUR": return €${converted}; default: return ${converted} درهم; } };
 
-    renderProducts();
-  </script></body>
-</html>
+return ( <div className="min-h-screen bg-black text-red-600 font-sans"> <header className="text-center py-8 text-4xl font-bold">Loki Shop</header>
+
+<div className="flex justify-center mb-4">
+    <label className="mr-2 text-white">اختر العملة:</label>
+    <select
+      value={currency}
+      onChange={(e) => setCurrency(e.target.value)}
+      className="bg-zinc-900 text-white px-4 py-2 rounded-md"
+    >
+      <option value="MAD">الدرهم المغربي</option>
+      <option value="USD">الدولار الأمريكي</option>
+      <option value="EUR">اليورو</option>
+    </select>
+  </div>
+
+  <main className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
+    {products.map((product, index) => (
+      <Card key={index} className="bg-zinc-900 text-white rounded-2xl shadow-lg">
+        <img src={product.image} alt={product.name} className="rounded-t-2xl w-full h-64 object-cover" />
+        <CardContent className="p-4 text-center">
+          <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
+          <p className="text-red-400 font-bold mb-4">{formatPrice(product.priceMAD)}</p>
+          <Button className="bg-red-600 hover:bg-red-700 w-full">أضف للسلة</Button>
+        </CardContent>
+      </Card>
+    ))}
+  </main>
+
+  <footer className="text-center py-6 text-white text-sm">
+    &copy; 2025 Loki Shop - جميع الحقوق محفوظة
+  </footer>
+</div>
+
+); }
+
